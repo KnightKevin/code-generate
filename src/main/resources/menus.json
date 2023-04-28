@@ -14,7 +14,61 @@
   ],
   "children": [
     {
-      "refJson": "vm/start.json"
+      "refButton": "vm/requestConsole.json"
+    },
+    {
+      "refButton": "vm/sync.json"
+    },
+    {
+      "refButton": "vm/accept.json"
+    },
+    {
+      "refButton": "vm/cancelAccept.json"
+    },
+    {
+      "refButton": "vm/editAlias.json"
+    },
+    {
+      "refButton": "vm/bindTag.json"
+    },
+    {
+      "refButton": "vm/unbindTag.json"
+    },
+    {
+      "refButton": "vm/extendTenancy.json"
+    },
+    {
+      "refButton": "vm/delete.json"
+    },
+    {
+      "refButton": "vm/attach.json"
+    },
+    {
+      "refButton": "vm/detach.json"
+    },
+    {
+      "refButton": "vm/start.json"
+    },
+    {
+      "refButton": "vm/stop.json"
+    },
+    {
+      "refButton": "vm/reboot.json"
+    },
+    {
+      "refButton": "vm/changeChargingMode.json"
+    },
+    {
+      "refButton": "vm/editCloudBrief.json"
+    },
+    {
+      "refButton": "vm/addNetworkCard.json"
+    },
+    {
+      "refButton": "vm/deleteNetworkCard.json"
+    },
+    {
+      "refButton": "vm/delete.json"
     }
-    ]
+  ]
 }

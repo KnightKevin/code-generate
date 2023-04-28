@@ -1,5 +1,5 @@
 {
-  "key" : "reboot",
+  "id" : "reboot",
   "name" : "重启",
   "range" : [ ],
   "rights" : [ "moVmReboot" ],

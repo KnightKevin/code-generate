@@ -1,5 +1,5 @@
 {
-  "key" : "setVmStaticIp",
+  "id" : "setVmStaticIp",
   "name" : "设置IP",
   "range" : [ ],
   "rights" : [ "moVmSetStaticIp" ],

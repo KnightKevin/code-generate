@@ -1,5 +1,5 @@
 {
-  "key" : "extendTenancy",
+  "id" : "extendTenancy",
   "name" : "延长租期",
   "range" : [ ],
   "rights" : [ "moVmExtendTenancy" ],

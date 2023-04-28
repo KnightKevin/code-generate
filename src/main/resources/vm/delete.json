@@ -1,5 +1,5 @@
 {
-  "key" : "delete",
+  "id" : "delete",
   "name" : "删除",
   "range" : [ ],
   "rights" : [ "moVmDelete" ],

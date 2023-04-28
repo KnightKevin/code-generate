@@ -1,6 +1,6 @@
 {
-  "id" : "unbindTag",
-  "name" : "解绑标签",
+  "id" : "editCloudBrief",
+  "name" : "编辑",
   "range" : [ ],
   "rights" : [ ],
   "type" : "button"

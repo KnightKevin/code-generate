@@ -1,6 +1,6 @@
 {
-  "id" : "unbindTag",
-  "name" : "解绑标签",
+  "id" : "sync",
+  "name" : "同步",
   "range" : [ ],
   "rights" : [ ],
   "type" : "button"

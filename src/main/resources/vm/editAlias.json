@@ -1,6 +1,6 @@
 {
-  "id" : "unbindTag",
-  "name" : "解绑标签",
+  "id" : "editAlias",
+  "name" : "编辑属性",
   "range" : [ ],
   "rights" : [ ],
   "type" : "button"

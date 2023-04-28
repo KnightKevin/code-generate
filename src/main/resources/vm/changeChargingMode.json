@@ -1,5 +1,5 @@
 {
-  "key" : "changeChargingMode",
+  "id" : "changeChargingMode",
   "name" : "计费类型切换",
   "range" : [ ],
   "rights" : [ "changeChargingMode" ],

@@ -1,5 +1,5 @@
 {
-  "key" : "stop",
+  "id" : "stop",
   "name" : "停止",
   "range" : [ ],
   "rights" : [ "moVmStop" ],

@@ -1,5 +1,5 @@
 {
-  "key" : "attach",
+  "id" : "attach",
   "name" : "加载云硬盘",
   "range" : [ ],
   "rights" : [ "moVmAttach" ],

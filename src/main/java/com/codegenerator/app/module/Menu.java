@@ -24,6 +24,8 @@ public class Menu {
      * */
     private String refJson = "";
 
+    private String refButton = "";
+
     /**
      * 选填，默认是所有角色类型都生效
      *

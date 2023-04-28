@@ -1,5 +1,5 @@
 {
-  "key" : "accept",
+  "id" : "accept",
   "name" : "纳管",
   "range" : [ ],
   "rights" : [ "moVmAccept" ],

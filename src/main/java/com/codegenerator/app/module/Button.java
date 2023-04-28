@@ -11,7 +11,7 @@ import java.util.Set;
 @Setter
 @Getter
 public class Button {
-    private String key;
+    private String id;
     /**
      * 选填，默认是所有角色类型都生效
      *

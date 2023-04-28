@@ -1,5 +1,5 @@
 {
-  "key" : "addNetworkCard",
+  "id" : "addNetworkCard",
   "name" : "添加网卡",
   "range" : [ ],
   "rights" : [ ],

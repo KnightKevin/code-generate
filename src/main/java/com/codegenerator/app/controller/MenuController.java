@@ -47,7 +47,7 @@ public class MenuController {
                 BeanUtils.copyProperties(i, button);
 
                 String key = arr[arr.length-1];
-                button.setKey(key);
+                button.setId(key);
 
                 writeJsonToFile(JSONObject.toJSONString(button), dir+key+".json");
             } catch (IOException e) {
@@ -84,6 +84,12 @@ public class MenuController {
             if (StringUtils.hasText(i.getRefJson())) {
                 menu = convert(i.getRefJson());
             }
+
+            if (StringUtils.hasText(i.getRefButton())) {
+                menu = convert(i.getRefButton());
+                menu.setId(tree.getId()+"."+menu.getId());
+            }
+
             children.add(menu);
 
             parseRefJson(menu);

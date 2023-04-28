@@ -1,5 +1,5 @@
 {
-  "key" : "cancelAccept",
+  "id" : "cancelAccept",
   "name" : "取消纳管",
   "range" : [ ],
   "rights" : [ "moVmCancelAccept" ],
