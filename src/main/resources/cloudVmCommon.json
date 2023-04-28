@@ -1,0 +1,24 @@
+[
+  {
+    "key": "",
+    "range": [],
+    "name": "启动",
+    "type": "button",
+    "parentId": "",
+    "rights": [
+      "moVmStart"
+    ],
+    "children": []
+  },
+  {
+    "key": "",
+    "range": [],
+    "name": "停止",
+    "type": "button",
+    "parentId": "",
+    "rights": [
+      "moVmStop"
+    ],
+    "children": []
+  }
+]

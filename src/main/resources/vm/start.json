@@ -1,0 +1,7 @@
+{
+  "key" : "start",
+  "name" : "启动",
+  "range" : [ ],
+  "rights" : [ "moVmStart" ],
+  "type" : "button"
+}

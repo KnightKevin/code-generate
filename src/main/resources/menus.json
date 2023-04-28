@@ -1,0 +1,20 @@
+{
+  "id": "resource.cloudMgt.vm",
+  "refJson": "",
+  "range": [],
+  "name": "云主机",
+  "type": "menu",
+  "parentId": "",
+  "rights": [
+    "moUpdateVm",
+    "resourcePageListVm",
+    "moUpdateAlias",
+    "resourceVmDetails",
+    "resourceQueryMonitorData"
+  ],
+  "children": [
+    {
+      "refJson": "vm/start.json"
+    }
+    ]
+}

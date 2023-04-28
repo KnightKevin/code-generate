@@ -1,0 +1,7 @@
+{
+  "key" : "attach",
+  "name" : "加载云硬盘",
+  "range" : [ ],
+  "rights" : [ "moVmAttach" ],
+  "type" : "button"
+}

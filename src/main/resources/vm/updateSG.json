@@ -1,0 +1,7 @@
+{
+  "key" : "updateSG",
+  "name" : "修改安全组",
+  "range" : [ ],
+  "rights" : [ "moVmUpdateSG" ],
+  "type" : "button"
+}

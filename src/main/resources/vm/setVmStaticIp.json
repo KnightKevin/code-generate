@@ -1,0 +1,7 @@
+{
+  "key" : "setVmStaticIp",
+  "name" : "设置IP",
+  "range" : [ ],
+  "rights" : [ "moVmSetStaticIp" ],
+  "type" : "button"
+}

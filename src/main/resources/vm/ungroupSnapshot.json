@@ -1,0 +1,7 @@
+{
+  "key" : "ungroupSnapshot",
+  "name" : "解绑快照组",
+  "range" : [ ],
+  "rights" : [ "ungroupVolumeSnapshot" ],
+  "type" : "button"
+}

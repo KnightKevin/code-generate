@@ -1,0 +1,7 @@
+{
+  "key" : "requestConsole",
+  "name" : "打开控制台",
+  "range" : [ ],
+  "rights" : [ "moVmRequestConsole" ],
+  "type" : "button"
+}

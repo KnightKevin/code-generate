@@ -1,0 +1,7 @@
+{
+  "key" : "updateSnapshot",
+  "name" : "修改快照组",
+  "range" : [ ],
+  "rights" : [ "updateVolumeSnapshot" ],
+  "type" : "button"
+}

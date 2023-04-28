@@ -1,0 +1,7 @@
+{
+  "key" : "changeChargingMode",
+  "name" : "计费类型切换",
+  "range" : [ ],
+  "rights" : [ "changeChargingMode" ],
+  "type" : "button"
+}
