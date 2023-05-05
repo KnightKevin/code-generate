@@ -1,8 +1,10 @@
 package com.codegenerator.app.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.codegenerator.app.module.Button;
 import com.codegenerator.app.module.MenuTree;
+import com.codegenerator.app.module.MenuTreeVo;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.BeanUtils;
@@ -22,7 +24,7 @@ import java.util.List;
 public class MenuController {
 
     @PostMapping("/writeJsonToFile")
-    public MenuTree writeJsonToFile(@RequestBody MenuTree menus) throws IOException {
+    public MenuTree writeJsonToFile(@RequestBody MenuTree menus) {
 //        ClassPathResource resource = new ClassPathResource("/menus.json");
 //        // 获取 menus.json 文件的路径
 //        String menuFilePath = resource.getFile().getPath();
@@ -61,7 +63,7 @@ public class MenuController {
     }
 
     @GetMapping("/readJson")
-    public MenuTree readJson() throws IOException {
+    public MenuTreeVo readJson() throws IOException {
         ClassPathResource resource = new ClassPathResource("menus.json");
         // 获取 menus.json 文件的路径
         String menuFilePath = resource.getFile().getPath();
@@ -73,8 +75,19 @@ public class MenuController {
 
         parseRefJson(menus);
 
+        String json = JSON.toJSONString(menus);
 
-        return menus;
+        return JSON.parseObject(json, MenuTreeVo.class);
+    }
+
+    @PostMapping("/formatJson")
+    public MenuTreeVo formatJson(@RequestBody MenuTree menus ) throws IOException {
+
+        parseRefJson(menus);
+
+        String json = JSON.toJSONString(menus);
+
+        return JSON.parseObject(json, MenuTreeVo.class);
     }
 
     private void parseRefJson(MenuTree tree) throws IOException {
@@ -88,6 +101,11 @@ public class MenuController {
             if (StringUtils.hasText(i.getRefButton())) {
                 menu = convert(i.getRefButton());
                 menu.setId(tree.getId()+"."+menu.getId());
+            }
+
+            // 如果该节点的id没有'.'符号，就将其的完整路径作为前缀构造id
+            if (!i.getId().contains(".")) {
+                menu.setId(tree.getId()+"."+i.getId());
             }
 
             children.add(menu);

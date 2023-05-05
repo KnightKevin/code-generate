@@ -1,74 +1,81 @@
 {
-  "id": "resource.cloudMgt.vm",
+  "id": "vm.catalogue.ticket",
   "refJson": "",
   "range": [],
-  "name": "云主机",
+  "name": "服务目录",
   "type": "menu",
   "parentId": "",
   "rights": [
-    "moUpdateVm",
-    "resourcePageListVm",
-    "moUpdateAlias",
-    "resourceVmDetails",
-    "resourceQueryMonitorData"
+    "catalogueUpdate",
+    "bizCatalogueList",
+    "rpListImage",
+    "catalogueDetail",
+    "rpListNetwork",
+    "rpListDiskFlavor",
+    "catalogueEnable",
+    "catalogueDelete",
+    "rpListFlavor",
+    "catalogueCreate",
+    "rpListPs",
+    "vdc:tree",
+    "catalogueDisable",
+    "vdcRpList",
+    "queryEnableVdcList",
+    "rpListSg"
   ],
   "children": [
     {
-      "refButton": "vm/requestConsole.json"
+      "id": "create",
+      "range": [],
+      "name": "创建服务目录",
+      "type": "button",
+      "rights": [
+      ]
     },
     {
-      "refButton": "vm/sync.json"
+      "id": "publish",
+      "range": [],
+      "name": "发布",
+      "type": "button",
+      "rights": [
+      ]
     },
     {
-      "refButton": "vm/accept.json"
+      "id": "cancelPublish",
+      "range": [],
+      "name": "取消发布",
+      "type": "button",
+      "rights": [
+      ]
     },
     {
-      "refButton": "vm/cancelAccept.json"
+      "id": "edit",
+      "range": [],
+      "name": "编辑",
+      "type": "button",
+      "rights": [
+      ]
     },
     {
-      "refButton": "vm/editAlias.json"
+      "id": "editSingleFeeRule",
+      "range": [],
+      "name": "编辑单次计费规则",
+      "type": "button",
+      "rights": []
     },
     {
-      "refButton": "vm/bindTag.json"
+      "id": "editTemplateConfig",
+      "range": [],
+      "name": "修改服务模板配置",
+      "type": "button",
+      "rights": []
     },
     {
-      "refButton": "vm/unbindTag.json"
-    },
-    {
-      "refButton": "vm/extendTenancy.json"
-    },
-    {
-      "refButton": "vm/delete.json"
-    },
-    {
-      "refButton": "vm/attach.json"
-    },
-    {
-      "refButton": "vm/detach.json"
-    },
-    {
-      "refButton": "vm/start.json"
-    },
-    {
-      "refButton": "vm/stop.json"
-    },
-    {
-      "refButton": "vm/reboot.json"
-    },
-    {
-      "refButton": "vm/changeChargingMode.json"
-    },
-    {
-      "refButton": "vm/editCloudBrief.json"
-    },
-    {
-      "refButton": "vm/addNetworkCard.json"
-    },
-    {
-      "refButton": "vm/deleteNetworkCard.json"
-    },
-    {
-      "refButton": "vm/delete.json"
+      "id": "delete",
+      "range": [],
+      "name": "删除",
+      "type": "button",
+      "rights": []
     }
   ]
 }
