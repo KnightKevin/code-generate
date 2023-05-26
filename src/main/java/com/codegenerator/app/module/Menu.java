@@ -17,7 +17,7 @@ public class Menu {
      * */
     private String id = "";
 
-    private List<String> range = new ArrayList<>(4);
+    private List<RoleType> range = new ArrayList<>(4);
 
     /**
      * 必填

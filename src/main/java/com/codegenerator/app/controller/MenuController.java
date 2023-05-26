@@ -2,6 +2,7 @@ package com.codegenerator.app.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.codegenerator.app.module.Button;
 import com.codegenerator.app.module.MenuTree;
 import com.codegenerator.app.module.MenuTreeVo;
@@ -85,7 +86,7 @@ public class MenuController {
 
         parseRefJson(menus);
 
-        String json = JSON.toJSONString(menus);
+        String json = JSON.toJSONString(menus, SerializerFeature.WriteEnumUsingToString);
 
         return JSON.parseObject(json, MenuTreeVo.class);
     }
