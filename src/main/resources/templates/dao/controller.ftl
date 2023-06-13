@@ -8,7 +8,7 @@ import com.zstack.cmp.infrastructure.utils.CheckUtil;
 import com.zstack.cmp.infrastructure.utils.RestUtil;
 import com.zstack.cmp.infrastructure.utils.UserUtil;
 import com.zstack.cmp.resource.api.I${className}Api;
-import com.zstack.cmp.resource.model.${className}Reply;
+import com.zstack.cmp.resource.model.reply.${className}Reply;
 import com.zstack.cmp.resource.model.req.${className}Cmd;
 import com.zstack.cmp.resource.model.req.${className}Qry;
 import io.swagger.annotations.Api;
@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("/api/${tableClassVarName}")
-public class I${className}Controller {
+public class ${className}Controller {
 
     @Autowired
     private I${className}Api ${tableClassVarName}Api;
@@ -68,7 +68,7 @@ public class I${className}Controller {
     @PreAuthorize("hasAuthority('${tableClassVarName}Add')")
     @ActionKey(code = "${tableClassVarName}Add")
     @PostMapping("/Create")
-    public RestBean<${className}Reply> createResourcePool(
+    public RestBean<${className}Reply> create(
             @RequestBody @Validated ${className}Cmd cmd
     ) {
         cmd.setCreateBy(UserUtil.getUserId());
@@ -80,7 +80,7 @@ public class I${className}Controller {
     @PreAuthorize("hasAuthority('${tableClassVarName}Update')")
     @ActionKey(code = "${tableClassVarName}Update")
     @PostMapping("/Update")
-    public RestBean<${className}Reply> updateResourcePool(
+    public RestBean<${className}Reply> update(
             @RequestBody @Validated ${className}Cmd cmd
     ) {
         return RestUtil.success(${tableClassVarName}Api.update(cmd));
@@ -90,7 +90,7 @@ public class I${className}Controller {
     @PreAuthorize("hasAuthority('${tableClassVarName}Delete')")
     @ActionKey(code = "${tableClassVarName}Delete")
     @PostMapping("/Delete")
-    public RestBean<?> deleteResourcePool(
+    public RestBean<?> delete(
             @RequestBody String[] uuids
     ) {
         ${tableClassVarName}Api.delete(uuids);

@@ -61,7 +61,7 @@ public class CController {
 
 
         // cmd bean中会排除数据库中那些不须要处理的字段
-        String[] cmdExcludeFields = {"uuid", "createDate", "updateDate"};
+        String[] cmdExcludeFields = {"createDate", "updateDate"};
 
         // 获取FreeMarker配置
         Configuration configuration = freeMarkerConfigurer.getConfiguration();
@@ -126,7 +126,7 @@ public class CController {
         writeToFile(renderedText, fileName);
 
         renderedText = FreeMarkerTemplateUtils.processTemplateIntoString(apiTemplate, entityMap);
-        fileName = dir + String.format("%sApi.java", className);
+        fileName = dir + String.format("I%sApi.java", className);
         writeToFile(renderedText, fileName);
 
         renderedText = FreeMarkerTemplateUtils.processTemplateIntoString(apiImplTemplate, entityMap);

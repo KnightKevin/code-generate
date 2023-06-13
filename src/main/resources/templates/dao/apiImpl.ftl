@@ -5,10 +5,11 @@ import com.zstack.cmp.common.model.PageResults;
 import com.zstack.cmp.infrastructure.utils.ModelMapperUtil;
 import com.zstack.cmp.resource.api.I${className}Api;
 import com.zstack.cmp.resource.entity.${className};
-import com.zstack.cmp.resource.model.${className}Reply;
+import com.zstack.cmp.resource.model.reply.${className}Reply;
 import com.zstack.cmp.resource.model.req.${className}Cmd;
 import com.zstack.cmp.resource.model.req.${className}Qry;
 import com.zstack.cmp.resource.service.I${className}Service;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -55,7 +56,16 @@ public class ${className}ApiImpl implements I${className}Api {
 
     @Override
     public ${className}Reply update(${className}Cmd cmd) {
-        ${className} entity = ModelMapperUtil.getMapper().map(cmd, ${className}.class);
+        ${className} entity = ${tableClassVarName}Service.getByUuid(cmd.getUuid());
+
+        if (entity == null) {
+            throw new RuntimeException("data don't exist");
+        }
+
+        cmd.setCreateBy(entity.getCreateBy());
+        cmd.setCreateByName(entity.getCreateByName());
+
+        BeanUtils.copyProperties(cmd, entity);
 
         ${tableClassVarName}Service.update(entity);
 

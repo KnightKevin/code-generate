@@ -69,7 +69,7 @@ public class ${className}ServiceImpl extends JpaService implements I${className}
             throw new RuntimeException("uuid must be null");
         }
 
-        ${className} result = repository.saveAndFlush(${tableClassVarName});
+        ${className} result = repository.saveAndFlush(entity);
 
         log.info("${className} create [{}]", JSONObject.toJSONString(result));
 
@@ -84,7 +84,7 @@ public class ${className}ServiceImpl extends JpaService implements I${className}
             throw new RuntimeException("uuid must not be null");
         }
 
-        ${className} result = repository.saveAndFlush(${tableClassVarName});
+        ${className} result = repository.saveAndFlush(entity);
 
         log.info("${className} update [{}]", JSONObject.toJSONString(result));
 
