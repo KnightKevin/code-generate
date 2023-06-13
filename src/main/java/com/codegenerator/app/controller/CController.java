@@ -1,10 +1,11 @@
 package com.codegenerator.app.controller;
 
-import com.codegenerator.app.enums.MoType;
+import com.alibaba.fastjson.JSONObject;
 import com.codegenerator.app.model.DbField;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.Context;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -21,8 +21,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
+@Slf4j
 @RestController
 public class CController {
 
@@ -52,9 +52,6 @@ public class CController {
             String columnName = rs.getString("COLUMN_NAME");
             String dataType = rs.getString("DATA_TYPE");
             String columnType = rs.getString("COLUMN_TYPE");
-            System.out.println("Column Name: " + columnName);
-            System.out.println("Data Type: " + dataType);
-            System.out.println("Column Type: " + columnType);
             return field;
         }));
 
@@ -63,7 +60,8 @@ public class CController {
 
 
 
-        // 构造实体类
+        // cmd bean中会排除数据库中那些不须要处理的字段
+        String[] cmdExcludeFields = {"uuid", "createDate", "updateDate"};
 
         // 获取FreeMarker配置
         Configuration configuration = freeMarkerConfigurer.getConfiguration();
@@ -77,6 +75,10 @@ public class CController {
         Template apiTemplate = configuration.getTemplate("dao/api.ftl");
         Template apiImplTemplate = configuration.getTemplate("dao/apiImpl.ftl");
         Template controllerTemplate = configuration.getTemplate("dao/controller.ftl");
+        Template cmdTemplate = configuration.getTemplate("dao/cmd.ftl");
+        Template cmdPostBodyTemplate = configuration.getTemplate("dao/cmdPostBody.ftl");
+
+
 
 
 
@@ -96,6 +98,7 @@ public class CController {
         entityMap.put("tableClassVarName", convertToCamelCase(tableName));
         entityMap.put("className", uppercaseFirstChar(className));
         entityMap.put("list", list);
+        entityMap.put("cmdExcludeFields", cmdExcludeFields);
         // 渲染模板并获取文本内容
         String renderedText = FreeMarkerTemplateUtils.processTemplateIntoString(entityTemplate, entityMap);
 
@@ -134,6 +137,13 @@ public class CController {
         fileName = dir + String.format("%sController.java", className);
         writeToFile(renderedText, fileName);
 
+        renderedText = FreeMarkerTemplateUtils.processTemplateIntoString(cmdTemplate, entityMap);
+        fileName = dir + String.format("%sCmd.java", className);
+        writeToFile(renderedText, fileName);
+
+        renderedText = FreeMarkerTemplateUtils.processTemplateIntoString(cmdPostBodyTemplate, entityMap);
+        fileName = dir + String.format("%s.json", className);
+        writeToFile(renderedText, fileName);
         return renderedText;
     }
 
