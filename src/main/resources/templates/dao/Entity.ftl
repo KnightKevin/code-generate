@@ -1,6 +1,7 @@
 package com.zstack.cmp.resource.entity;
 
 import lombok.Data;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -17,6 +18,7 @@ import javax.persistence.TemporalType;
 import java.util.Date;
 
 @Data
+@DynamicUpdate
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 public class ${className} {
