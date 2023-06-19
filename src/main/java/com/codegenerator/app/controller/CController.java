@@ -1,6 +1,6 @@
 package com.codegenerator.app.controller;
 
-import com.alibaba.fastjson.JSONObject;
+import com.codegenerator.app.enums.RespCode;
 import com.codegenerator.app.model.DbField;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -12,7 +12,6 @@ import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
-import org.thymeleaf.TemplateEngine;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -28,9 +27,6 @@ public class CController {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    TemplateEngine templateEngine;
 
     @Autowired
     private FreeMarkerConfigurer freeMarkerConfigurer;
@@ -144,6 +140,29 @@ public class CController {
         renderedText = FreeMarkerTemplateUtils.processTemplateIntoString(cmdPostBodyTemplate, entityMap);
         fileName = dir + String.format("%s.json", className);
         writeToFile(renderedText, fileName);
+        return renderedText;
+    }
+
+    @GetMapping("/e")
+    public String e() throws IOException, TemplateException {
+        final String dir = "target/i18n/";
+
+        deleteDirectory(new File(dir));
+
+        String fileName = dir + "/Messages_zh_CN.properties";
+
+        // 获取FreeMarker配置
+        Configuration configuration = freeMarkerConfigurer.getConfiguration();
+        Template template = configuration.getTemplate("i18n.ftl");
+
+
+        Map<String, Object> entityMap = new HashMap<>();
+        entityMap.put("list", RespCode.values());
+        // 渲染模板并获取文本内容
+        String renderedText = FreeMarkerTemplateUtils.processTemplateIntoString(template, entityMap);
+
+        writeToFile(renderedText, fileName);
+
         return renderedText;
     }
 
