@@ -23,7 +23,7 @@ import java.util.Map;
 
 @Slf4j
 @RestController
-public class CController {
+public class CmpGenCodeController {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -32,8 +32,12 @@ public class CController {
     private FreeMarkerConfigurer freeMarkerConfigurer;
 
 
-    @GetMapping("/d")
-    public String d(String tableName) throws IOException, TemplateException {
+    /**
+     * 生成db相关的文件
+     *
+     * */
+    @GetMapping("/db")
+    public String db(String tableName) throws IOException, TemplateException {
 
         String query = String.format("SELECT COLUMN_NAME, DATA_TYPE, COLUMN_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE table_schema = 'zstack_cmp' and TABLE_NAME = '%s'", tableName);
         List<DbField> list = new ArrayList<>(jdbcTemplate.query(query, (rs, rowNum) -> {
@@ -143,10 +147,12 @@ public class CController {
         return renderedText;
     }
 
-    @GetMapping("/e")
-    public String e() throws IOException, TemplateException {
+    /**
+     * 生成返回码相关的国际化中文部分
+     * */
+    @GetMapping("/respCodeI18n")
+    public String respCodeI18n() throws IOException, TemplateException {
         final String dir = "target/i18n/";
-
         deleteDirectory(new File(dir));
 
         String fileName = dir + "/Messages_zh_CN.properties";
@@ -154,7 +160,6 @@ public class CController {
         // 获取FreeMarker配置
         Configuration configuration = freeMarkerConfigurer.getConfiguration();
         Template template = configuration.getTemplate("i18n.ftl");
-
 
         Map<String, Object> entityMap = new HashMap<>();
         entityMap.put("list", RespCode.values());
