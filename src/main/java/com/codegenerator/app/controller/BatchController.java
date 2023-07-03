@@ -6,19 +6,26 @@ import org.springframework.batch.core.JobInstance;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersInvalidException;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.configuration.JobRegistry;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.configuration.support.JobRegistryBeanPostProcessor;
 import org.springframework.batch.core.explore.JobExplorer;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.JobOperator;
+import org.springframework.batch.core.launch.support.SimpleJobLauncher;
 import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
 
 
 @RestController
@@ -39,6 +46,9 @@ public class BatchController {
     @Autowired
     private JobExplorer jobExplorer;
 
+    @Autowired
+    private JobRegistry jobRegistry;
+
     @Bean
     public Step stepA() {
         return stepBuilderFactory.get("stepA").tasklet((contribution, chunkContext)->{
@@ -55,7 +65,6 @@ public class BatchController {
             return RepeatStatus.FINISHED;
         })
 
-                .allowStartIfComplete(true)
                 .build();
     }
 
@@ -63,9 +72,17 @@ public class BatchController {
     public Step stepB() {
         return stepBuilderFactory.get("stepB").tasklet((contribution, chunkContext)->{
             System.out.println("Processing B");
+
+            try {
+                Thread.sleep(10000);
+                System.out.println("processing B end");
+            } catch (Exception e) {
+
+            }
+
+
             return RepeatStatus.FINISHED;
         })
-                .allowStartIfComplete(true)
                 .build();
     }
 
@@ -75,7 +92,6 @@ public class BatchController {
             System.out.println("Processing C");
             return RepeatStatus.FINISHED;
         })
-                .allowStartIfComplete(true)
                 .build();
     }
 
@@ -84,7 +100,6 @@ public class BatchController {
         return jobBuilderFactory.get("myJob")
                 .start(stepA())
                 .next(stepB())
-
                 .next(stepC())
                 .build();
     }
@@ -106,20 +121,35 @@ public class BatchController {
         return "";
     }
 
+    @GetMapping("/startNextInstance")
+    public String startNextInstance(String jobName) throws Exception {
+
+        jobOperator.startNextInstance(jobName);
+
+        return "";
+    }
+
     @GetMapping("/restart")
     public String restart(long executionId) throws Exception {
-
-        JobInstance lastJobInstance = jobExplorer.getLastJobInstance("myJob");
-        if (lastJobInstance != null) {
-            JobExecution lastExecution = jobExplorer.getLastJobExecution(lastJobInstance);
-            if (lastExecution.getStatus().isUnsuccessful() || lastExecution.getStatus().isRunning()) {
-                jobOperator.restart(lastExecution.getId());
-                return "Job restarted from step: " + lastExecution.getStepExecutions().size();
-            } else {
-                return "Job has already completed successfully.";
-            }
-        } else {
-            return "No previous job execution found.";
-        }
+        JobExecution execution = jobExplorer.getJobExecution(executionId);
+        jobOperator.restart(executionId);
+        return "ok";
     }
+
+    @GetMapping("/stop")
+    public String stop(long executionId) throws Exception {
+
+        jobOperator.stop(executionId);
+
+        return "";
+    }
+
+    @Bean
+    public JobRegistryBeanPostProcessor jobRegistryBeanPostProcessor() {
+        JobRegistryBeanPostProcessor postProcessor = new JobRegistryBeanPostProcessor();
+        postProcessor.setJobRegistry(jobRegistry);
+        return postProcessor;
+    }
+
+
 }
