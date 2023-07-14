@@ -1,7 +1,0 @@
-{
-  "key" : "extendTenancy",
-  "name" : "延长租期",
-  "range" : [ ],
-  "rights" : [ "moVmExtendTenancy" ],
-  "type" : "button"
-}

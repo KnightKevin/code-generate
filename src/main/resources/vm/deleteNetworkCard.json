@@ -1,7 +1,0 @@
-{
-  "key" : "deleteNetworkCard",
-  "name" : "删除网卡",
-  "range" : [ ],
-  "rights" : [ "moVmDeleteNetworkdcard" ],
-  "type" : "button"
-}

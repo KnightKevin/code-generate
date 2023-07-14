@@ -1,7 +1,0 @@
-{
-  "key" : "addSnapshot",
-  "name" : "添加快照组",
-  "range" : [ ],
-  "rights" : [ "createVolumeSnapshot" ],
-  "type" : "button"
-}
