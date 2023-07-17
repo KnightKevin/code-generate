@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class TestController {
 
-    @OperateLog("order name is {{queryOrderName(#{body.orderId})}}")
+    @OperateLog("order name is {{queryOrderName(#body.orderId)}}")
     @PostMapping("/a")
     public String a(@RequestBody Order body) {
         return "a";

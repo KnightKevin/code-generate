@@ -11,13 +11,39 @@ import org.springframework.expression.common.TemplateParserContext;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 
-import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Slf4j
 public class AppTest {
 
+    private static final Pattern pattern = Pattern.compile("\\{\\s*(\\w*)\\s*\\{(.*?)}}");
+
+
     @Test
     public void test1() throws NoSuchMethodException {
+
+        final String template = "更新了订单{ORDER{#order.orderId}},{ORDER{#order.orderId}},m更新内容为...";
+        Matcher matcher = pattern.matcher(template);
+
+        StringBuffer sb = new StringBuffer();
+        while (matcher.find()) {
+            String expression = matcher.group(2);
+            String functionName = matcher.group(1);
+
+            String value = "value";
+            // 匹配后记得替换
+
+            matcher.appendReplacement(sb, Matcher.quoteReplacement(value));
+
+
+            log.info("sfd");
+        }
+
+        matcher.appendTail(sb);
+
+
+
 
         Order order = new Order();
         order.setOrderId("orderIdsdfsdfsdf");
@@ -40,6 +66,6 @@ public class AppTest {
 
 }
 
-class Demo {
-    List<String> list;
+interface IParseFunction {
+
 }
