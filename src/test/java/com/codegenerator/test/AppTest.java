@@ -1,17 +1,11 @@
 package com.codegenerator.test;
 
-import com.codegenerator.app.model.Order;
-import com.codegenerator.app.model.Place;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
-import org.springframework.expression.EvaluationContext;
-import org.springframework.expression.Expression;
-import org.springframework.expression.ExpressionParser;
-import org.springframework.expression.common.TemplateParserContext;
-import org.springframework.expression.spel.standard.SpelExpressionParser;
-import org.springframework.expression.spel.support.StandardEvaluationContext;
+import org.springframework.web.client.RestTemplate;
 
-import java.util.regex.Matcher;
+import java.io.IOException;
+import java.util.Random;
 import java.util.regex.Pattern;
 
 @Slf4j
@@ -21,51 +15,38 @@ public class AppTest {
 
 
     @Test
-    public void test1() throws NoSuchMethodException {
-
-        final String template = "更新了订单{ORDER{#order.orderId}},{ORDER{#order.orderId}},m更新内容为...";
-        Matcher matcher = pattern.matcher(template);
-
-        StringBuffer sb = new StringBuffer();
-        while (matcher.find()) {
-            String expression = matcher.group(2);
-            String functionName = matcher.group(1);
-
-            String value = "value";
-            // 匹配后记得替换
-
-            matcher.appendReplacement(sb, Matcher.quoteReplacement(value));
+    public void test1() throws IOException {
 
 
-            log.info("sfd");
+        int n = 3;
+        String prefix = "http_";
+
+        for (int i = 0; i < n; i++) {
+            push(prefix+i, randomDouble());
         }
-
-        matcher.appendTail(sb);
-
-
-
-
-        Order order = new Order();
-        order.setOrderId("orderIdsdfsdfsdf");
-        order.setName("ccc");
-        order.setPlace(new Place("palcasdfasf"));
-
-        EvaluationContext context = new StandardEvaluationContext();
-        context.setVariable("order", order);
-
-        ExpressionParser parser = new SpelExpressionParser();
-        Expression exp = parser.parseExpression("asfdasdf = #{#order.orderId}", new TemplateParserContext());
-        Object s = exp.getValue(context);
-
-        log.info("s = {}", s);
+        log.info("s");
     }
 
-    public static String func1() {
-        return "func1asdfasdfadfasdfasdf";
+
+    private void push(String id, double v) {
+        String pushgatewayUrl = "http://host231:9091/metrics/job/my_job";
+
+        String metricData = String.format("my_metric{instanceId=\"%s\"} %f", id, v);
+
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.postForObject(pushgatewayUrl, metricData, Void.class);
     }
 
-}
 
-interface IParseFunction {
+    private double randomDouble() {
+        // 创建 Random 对象
+        Random random = new Random();
+
+        // 生成 0 到 1 之间的 4 位小数
+        double randomDecimal = random.nextDouble();
+
+        return randomDecimal;
+    }
+
 
 }
