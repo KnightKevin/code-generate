@@ -1,13 +1,16 @@
-package com.zstack.cmp.resource.entity.querydsl;
+package ${entityPackage}.querydsl;
 
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.PathMetadata;
 import com.querydsl.core.types.dsl.DateTimePath;
 import com.querydsl.core.types.dsl.EntityPathBase;
+import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.core.types.dsl.StringPath;
-import com.zstack.cmp.resource.entity.${className};
+import ${entityPackage}.${className};
 
 import javax.annotation.Generated;
+
+import java.math.BigDecimal;
 
 import static com.querydsl.core.types.PathMetadataFactory.forVariable;
 
@@ -26,10 +29,16 @@ public class Q${className} extends EntityPathBase<${className}> {
 
  <#if i.dataType == 'varchar'>
     public final StringPath ${i.varName} = createString("${i.varName}");
+ <#elseif i.dataType == 'int'>
+    public final NumberPath<Integer> ${i.varName} = createNumber("${i.varName}", Integer.class);
+ <#elseif i.dataType == 'double'>
+    public final NumberPath<Double> ${i.varName} = createNumber("${i.varName}", Double.class);
+ <#elseif i.dataType == 'decimal'>
+    public final NumberPath<BigDecimal> ${i.varName} = createNumber(${i.varName}, BigDecimal.class);
  <#elseif i.dataType == 'datetime'>
     public final DateTimePath<java.util.Date> ${i.varName} = createDateTime("${i.varName}", java.util.Date.class);
  <#else>
-    // todo 须要支持${i.dataType}的解析
+    todo 须要支持${i.dataType}的解析
  </#if>
 </#list>
 

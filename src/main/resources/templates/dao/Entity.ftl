@@ -1,4 +1,4 @@
-package com.zstack.cmp.resource.entity;
+package ${entityPackage};
 
 import lombok.Data;
 import org.hibernate.annotations.DynamicUpdate;
@@ -15,6 +15,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -22,7 +23,6 @@ import java.util.Date;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 public class ${className} {
-
 <#list list as i>
 
 <#if i.name == 'uuid'>
@@ -45,7 +45,7 @@ public class ${className} {
     private Date updateDate;
 <#else>
     @Column(nullable = false)
-    private <#if i.dataType == 'varchar'> String </#if> ${i.varName};
+    private ${dbTypeConvert(i.dataType)} ${i.varName};
 </#if>
 </#list>
 

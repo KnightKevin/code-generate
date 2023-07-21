@@ -1,7 +1,7 @@
 package com.zstack.cmp.resource.service;
 
 import com.querydsl.core.QueryResults;
-import com.zstack.cmp.resource.entity.${className};
+import ${entityPackage}.${className};
 import com.zstack.cmp.resource.model.req.${className}Qry;
 
 public interface I${className}Service {

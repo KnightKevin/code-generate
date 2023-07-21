@@ -2,6 +2,7 @@ package com.codegenerator.app.controller;
 
 import com.codegenerator.app.enums.RespCode;
 import com.codegenerator.app.model.DbField;
+import com.codegenerator.app.util.DbTypeConvert;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -37,9 +38,15 @@ public class CmpGenCodeController {
      *
      * */
     @GetMapping("/db")
-    public String db(String tableName) throws IOException, TemplateException {
+    public String db(
+            String db,
+            String tableName,
+            String controllerPackage,
+            String facadePackage,
+            String entityPackage
+    ) throws IOException, TemplateException {
 
-        String query = String.format("SELECT COLUMN_NAME, DATA_TYPE, COLUMN_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE table_schema = 'zstack_cmp' and TABLE_NAME = '%s'", tableName);
+        String query = String.format("SELECT COLUMN_NAME, DATA_TYPE, COLUMN_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE table_schema = '%s' and TABLE_NAME = '%s'", db, tableName);
         List<DbField> list = new ArrayList<>(jdbcTemplate.query(query, (rs, rowNum) -> {
 
 
@@ -65,6 +72,7 @@ public class CmpGenCodeController {
 
         // 获取FreeMarker配置
         Configuration configuration = freeMarkerConfigurer.getConfiguration();
+        configuration.setSharedVariable("dbTypeConvert", new DbTypeConvert());
 
         // 加载模板
         Template entityTemplate = configuration.getTemplate("dao/Entity.ftl");
@@ -97,48 +105,49 @@ public class CmpGenCodeController {
         Map<String, Object> entityMap = new HashMap<>();
         entityMap.put("tableClassVarName", convertToCamelCase(tableName));
         entityMap.put("className", uppercaseFirstChar(className));
+        entityMap.put("entityPackage", entityPackage);
+
         entityMap.put("list", list);
         entityMap.put("cmdExcludeFields", cmdExcludeFields);
         // 渲染模板并获取文本内容
         String renderedText = FreeMarkerTemplateUtils.processTemplateIntoString(entityTemplate, entityMap);
 
-        String fileName = dir + String.format("%s.java", className);
-
+        String fileName = dir + String.format("entity/%s.java", className);
         writeToFile(renderedText, fileName);
 
         // reply对象
         renderedText = FreeMarkerTemplateUtils.processTemplateIntoString(replyTemplate, entityMap);
-        fileName = dir + String.format("%sReply.java", className);
+        fileName = dir + String.format("reply/%sReply.java", className);
         writeToFile(renderedText, fileName);
 
         // 渲染Q对象
         renderedText = FreeMarkerTemplateUtils.processTemplateIntoString(qTemplate, entityMap);
-        fileName = dir + String.format("Q%s.java", className);
+        fileName = dir + String.format("querydsl/Q%s.java", className);
         writeToFile(renderedText, fileName);
 
         // IxxService.java对象
         renderedText = FreeMarkerTemplateUtils.processTemplateIntoString(serviceTemplate, entityMap);
-        fileName = dir + String.format("I%sService.java", className);
+        fileName = dir + String.format("service/I%sService.java", className);
         writeToFile(renderedText, fileName);
 
         renderedText = FreeMarkerTemplateUtils.processTemplateIntoString(serviceImplTemplate, entityMap);
-        fileName = dir + String.format("%sServiceImpl.java", className);
+        fileName = dir + String.format("service/%sServiceImpl.java", className);
         writeToFile(renderedText, fileName);
 
         renderedText = FreeMarkerTemplateUtils.processTemplateIntoString(apiTemplate, entityMap);
-        fileName = dir + String.format("I%sApi.java", className);
+        fileName = dir + String.format("facade/I%sApi.java", className);
         writeToFile(renderedText, fileName);
 
         renderedText = FreeMarkerTemplateUtils.processTemplateIntoString(apiImplTemplate, entityMap);
-        fileName = dir + String.format("%sApiImpl.java", className);
+        fileName = dir + String.format("facade/%sApiImpl.java", className);
         writeToFile(renderedText, fileName);
 
         renderedText = FreeMarkerTemplateUtils.processTemplateIntoString(controllerTemplate, entityMap);
-        fileName = dir + String.format("%sController.java", className);
+        fileName = dir + String.format("controller/%sController.java", className);
         writeToFile(renderedText, fileName);
 
         renderedText = FreeMarkerTemplateUtils.processTemplateIntoString(cmdTemplate, entityMap);
-        fileName = dir + String.format("%sCmd.java", className);
+        fileName = dir + String.format("request/%sCmd.java", className);
         writeToFile(renderedText, fileName);
 
         renderedText = FreeMarkerTemplateUtils.processTemplateIntoString(cmdPostBodyTemplate, entityMap);
