@@ -34,6 +34,9 @@ public class DbTypeConvert implements TemplateMethodModelEx {
             case "decimal":
                 type = "BigDecimal";
                 break;
+            case "datetime":
+                type = "Date";
+                break;
             default:
                 type = String.format("/* the dbType{%s} has not been parsed yet! */", dbType);
         }

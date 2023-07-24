@@ -43,7 +43,8 @@ public class CmpGenCodeController {
             String tableName,
             String controllerPackage,
             String facadePackage,
-            String entityPackage
+            String entityPackage,
+            String module
     ) throws IOException, TemplateException {
 
         String query = String.format("SELECT COLUMN_NAME, DATA_TYPE, COLUMN_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE table_schema = '%s' and TABLE_NAME = '%s'", db, tableName);
@@ -84,6 +85,7 @@ public class CmpGenCodeController {
         Template apiImplTemplate = configuration.getTemplate("dao/apiImpl.ftl");
         Template controllerTemplate = configuration.getTemplate("dao/controller.ftl");
         Template cmdTemplate = configuration.getTemplate("dao/cmd.ftl");
+        Template qryTemplate = configuration.getTemplate("dao/qry.ftl");
         Template cmdPostBodyTemplate = configuration.getTemplate("dao/cmdPostBody.ftl");
 
 
@@ -106,6 +108,7 @@ public class CmpGenCodeController {
         entityMap.put("tableClassVarName", convertToCamelCase(tableName));
         entityMap.put("className", uppercaseFirstChar(className));
         entityMap.put("entityPackage", entityPackage);
+        entityMap.put("module", module);
 
         entityMap.put("list", list);
         entityMap.put("cmdExcludeFields", cmdExcludeFields);
@@ -150,10 +153,20 @@ public class CmpGenCodeController {
         fileName = dir + String.format("request/%sCmd.java", className);
         writeToFile(renderedText, fileName);
 
+
+        fileName = dir + String.format("request/%sQry.java", className);
+        render(fileName, qryTemplate, entityMap);
+
+
         renderedText = FreeMarkerTemplateUtils.processTemplateIntoString(cmdPostBodyTemplate, entityMap);
         fileName = dir + String.format("%s.json", className);
         writeToFile(renderedText, fileName);
         return renderedText;
+    }
+
+    private void render(String fileName, Template template, Map<String, Object> entityMap) throws IOException, TemplateException {
+        String renderedText = FreeMarkerTemplateUtils.processTemplateIntoString(template, entityMap);
+        writeToFile(renderedText, fileName);
     }
 
     /**

@@ -1,8 +1,8 @@
-package com.zstack.cmp.resource.service;
+package ${module}.service;
 
 import com.querydsl.core.QueryResults;
 import ${entityPackage}.${className};
-import com.zstack.cmp.resource.model.req.${className}Qry;
+import ${module}.req.${className}Qry;
 
 public interface I${className}Service {
     QueryResults<${className}> pageList(${className}Qry qry);

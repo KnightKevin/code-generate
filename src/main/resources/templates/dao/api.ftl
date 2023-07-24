@@ -1,12 +1,13 @@
-package com.zstack.cmp.resource.api;
+package ${module}.api;
 
-import com.querydsl.core.QueryResults;
-import com.zstack.cmp.resource.model.reply.${className}Reply;
-import com.zstack.cmp.resource.model.req.${className}Cmd;
-import com.zstack.cmp.resource.model.req.${className}Qry;
+import ${module}.model.reply.${className}Reply;
+import ${module}.model.req.${className}Cmd;
+import ${module}.model.req.${className}Qry;
+
+import com.zstack.cmp.common.model.PageResults;
 
 public interface I${className}Api {
-    QueryResults<${className}Reply> pageList(${className}Qry qry);
+    PageResults<${className}Reply> pageList(${className}Qry qry);
 
     ${className}Reply getByUuid(String uuid);
 

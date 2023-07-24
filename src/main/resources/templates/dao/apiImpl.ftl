@@ -1,14 +1,14 @@
-package com.zstack.cmp.resource.apiimpl;
+package ${module}.apiimpl;
 
 import com.querydsl.core.QueryResults;
 import com.zstack.cmp.common.model.PageResults;
 import com.zstack.cmp.infrastructure.utils.ModelMapperUtil;
-import com.zstack.cmp.resource.api.I${className}Api;
-import com.zstack.cmp.resource.entity.${className};
-import com.zstack.cmp.resource.model.reply.${className}Reply;
-import com.zstack.cmp.resource.model.req.${className}Cmd;
-import com.zstack.cmp.resource.model.req.${className}Qry;
-import com.zstack.cmp.resource.service.I${className}Service;
+import ${module}.api.I${className}Api;
+import ${module}.entity.${className};
+import ${module}.model.reply.${className}Reply;
+import ${module}.model.req.${className}Cmd;
+import ${module}.model.req.${className}Qry;
+import ${module}.service.I${className}Service;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package com.zstack.cmp.resource.service.impl;
+package ${module}.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.querydsl.core.BooleanBuilder;
@@ -10,10 +10,10 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.zstack.cmp.infrastructure.db.BaseRepository;
 import com.zstack.cmp.infrastructure.db.JpaService;
 import com.zstack.cmp.infrastructure.utils.Util;
-import com.zstack.cmp.resource.entity.${className};
-import com.zstack.cmp.resource.entity.querydsl.Q${className};
-import com.zstack.cmp.resource.model.req.${className}Qry;
-import com.zstack.cmp.resource.service.I${className}Service;
+import ${module}.entity.${className};
+import ${module}.entity.querydsl.Q${className};
+import ${module}.model.req.${className}Qry;
+import ${module}.service.I${className}Service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
