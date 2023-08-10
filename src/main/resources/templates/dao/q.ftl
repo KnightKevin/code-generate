@@ -31,6 +31,8 @@ public class Q${className} extends EntityPathBase<${className}> {
     public final StringPath ${i.varName} = createString("${i.varName}");
  <#elseif i.dataType == 'int'>
     public final NumberPath<Integer> ${i.varName} = createNumber("${i.varName}", Integer.class);
+ <#elseif i.dataType == 'bigint'>
+    public final NumberPath<Long> ${i.varName} = createNumber("${i.varName}", Long.class);
  <#elseif i.dataType == 'double'>
     public final NumberPath<Double> ${i.varName} = createNumber("${i.varName}", Double.class);
  <#elseif i.dataType == 'decimal'>
