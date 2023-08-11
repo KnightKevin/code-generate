@@ -4,7 +4,7 @@ import ${module}.model.reply.${className}Reply;
 import ${module}.model.req.${className}Cmd;
 import ${module}.model.req.${className}Qry;
 
-import com.zstack.cmp.common.model.PageResults;
+import com.zscmp.common.model.PageResults;
 
 public interface I${className}Api {
     PageResults<${className}Reply> pageList(${className}Qry qry);

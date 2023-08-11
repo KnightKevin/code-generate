@@ -1,12 +1,12 @@
-package com.zstack.cmp.bff.resource.controller;
+package com.zscmp.bff.resource.controller;
 
-import com.zstack.cmp.common.annotation.ActionKey;
-import com.zstack.cmp.common.enums.RespCode;
-import com.zstack.cmp.common.model.PageResults;
-import com.zstack.cmp.common.response.RestBean;
-import com.zstack.cmp.infrastructure.utils.CheckUtil;
-import com.zstack.cmp.infrastructure.utils.RestUtil;
-import com.zstack.cmp.infrastructure.utils.UserUtil;
+import com.zscmp.common.annotation.ActionKey;
+import com.zscmp.common.enums.RespCode;
+import com.zscmp.common.model.PageResults;
+import com.zscmp.common.response.RestBean;
+import com.zscmp.infrastructure.utils.CheckUtil;
+import com.zscmp.infrastructure.utils.RestUtil;
+import com.zscmp.infrastructure.utils.UserUtil;
 import ${module}.api.I${className}Api;
 import ${module}.model.reply.${className}Reply;
 import ${module}.model.req.${className}Cmd;

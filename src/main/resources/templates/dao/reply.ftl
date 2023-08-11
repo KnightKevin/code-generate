@@ -1,4 +1,4 @@
-package com.zstack.cmp.resource.model;
+package com.zscmp.resource.model;
 
 import java.util.Date;
 import lombok.Data;

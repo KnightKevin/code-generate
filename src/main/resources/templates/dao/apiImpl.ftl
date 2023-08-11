@@ -1,8 +1,8 @@
 package ${module}.apiimpl;
 
 import com.querydsl.core.QueryResults;
-import com.zstack.cmp.common.model.PageResults;
-import com.zstack.cmp.infrastructure.utils.ModelMapperUtil;
+import com.zscmp.common.model.PageResults;
+import com.zscmp.infrastructure.utils.ModelMapperUtil;
 import ${module}.api.I${className}Api;
 import ${module}.entity.${className};
 import ${module}.model.reply.${className}Reply;

@@ -1,6 +1,6 @@
-package com.zstack.cmp.resource.model.req;
+package com.zscmp.resource.model.req;
 
-import com.zstack.cmp.common.model.Pagination;
+import com.zscmp.common.model.Pagination;
 import lombok.Getter;
 import lombok.Setter;
 
