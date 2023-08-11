@@ -62,6 +62,9 @@ public class LogAspect {
             Expression exp = parser.parseExpression(expression);
             Object s = exp.getValue(context);
 
+
+            // 解析方法，并执行方法，得到返回值
+
             String value = "value";
             // 匹配后记得替换
 
