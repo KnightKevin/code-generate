@@ -1,7 +1,0 @@
-{
-  "id" : "stop",
-  "name" : "停止",
-  "range" : [ ],
-  "rights" : [ "moVmStop" ],
-  "type" : "button"
-}

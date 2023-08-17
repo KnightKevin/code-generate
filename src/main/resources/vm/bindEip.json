@@ -1,7 +1,0 @@
-{
-  "id" : "bindEip",
-  "name" : "绑定弹性IP",
-  "range" : [ ],
-  "rights" : [ "moListPortOfCanInsertEip", "moVmBindEip" ],
-  "type" : "button"
-}

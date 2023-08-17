@@ -1,7 +1,0 @@
-{
-  "id" : "unbindTag",
-  "name" : "解绑标签",
-  "range" : [ ],
-  "rights" : [ ],
-  "type" : "button"
-}

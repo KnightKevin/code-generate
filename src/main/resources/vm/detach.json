@@ -1,7 +1,0 @@
-{
-  "id" : "detach",
-  "name" : "卸载云硬盘",
-  "range" : [ ],
-  "rights" : [ "moVmDetach" ],
-  "type" : "button"
-}

@@ -1,7 +1,0 @@
-{
-  "id" : "deleteSnapshot",
-  "name" : "删除快照组",
-  "range" : [ ],
-  "rights" : [ "snapshotDefault" ],
-  "type" : "button"
-}

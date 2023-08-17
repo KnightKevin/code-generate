@@ -1,7 +1,0 @@
-{
-  "id" : "revertSnapshot",
-  "name" : "恢复快照组",
-  "range" : [ ],
-  "rights" : [ "revertVmFromSnapshot" ],
-  "type" : "button"
-}

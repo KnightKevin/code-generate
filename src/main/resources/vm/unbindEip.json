@@ -1,7 +1,0 @@
-{
-  "id" : "unbindEip",
-  "name" : "解绑弹性IP",
-  "range" : [ ],
-  "rights" : [ "moVmBindEip" ],
-  "type" : "button"
-}

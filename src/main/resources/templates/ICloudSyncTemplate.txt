@@ -1,6 +1,0 @@
-package com.zstack.cmp.plugin.resource.sync.type;
-
-import com.zstack.cmp.plugin.resource.sync.ICloudSync;
-
-public interface I[[${moType}]]CloudSync extends ICloudSync {
-}

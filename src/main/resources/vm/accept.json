@@ -1,7 +1,0 @@
-{
-  "id" : "accept",
-  "name" : "纳管",
-  "range" : [ ],
-  "rights" : [ "moVmAccept" ],
-  "type" : "button"
-}

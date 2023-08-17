@@ -1,7 +1,0 @@
-{
-  "id" : "addNetworkCard",
-  "name" : "添加网卡",
-  "range" : [ ],
-  "rights" : [ ],
-  "type" : "button"
-}
