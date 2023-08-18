@@ -9,32 +9,35 @@ import com.vmware.vim25.PropertySpec;
 import com.vmware.vim25.RetrieveOptions;
 import com.vmware.vim25.RetrieveResult;
 import com.vmware.vim25.SelectionSpec;
-import com.vmware.vim25.ServiceContent;
 import com.vmware.vim25.TraversalSpec;
-import com.vmware.vim25.VirtualMachineConfigInfo;
-import com.vmware.vim25.VirtualMachineConfigSpec;
-import com.vmware.vim25.mo.ContainerView;
-import com.vmware.vim25.mo.InventoryNavigator;
+import com.vmware.vim25.VirtualDevice;
 import com.vmware.vim25.mo.ManagedEntity;
 import com.vmware.vim25.mo.ServiceInstance;
 import com.vmware.vim25.mo.VirtualMachine;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j
 public class BaseTest {
+    String host = "host246";
+    String username = "administrator@vshpare.local";
+    String password = "Testing%123";
+
+    String TEXT_VIRTUAL_MACHINE = "VirtualMachine";
+    String TEXT_FOLDER = "Folder";
+    String TEXT_COMPUTE_RESOURCE = "ComputeResource";
+    String TEXT_CLUSTER_COMPUTE_RESOURCE = "ClusterComputeResource";
 
     /**
      * 遍历了datacenter中所有虚机和模板
      * */
     @Test
-    public void update() throws MalformedURLException, RemoteException {
+    public void list1() throws MalformedURLException, RemoteException {
 
         String host = "host246";
         String username = "administrator@vshpare.local";
@@ -45,8 +48,6 @@ public class BaseTest {
 
         String[] vmList = new String[1];
         vmList[0] ="VirtualMachine";
-
-
 
         ManagedObjectReference cViewRef = serviceInstance
                 .getViewManager()
@@ -88,6 +89,103 @@ public class BaseTest {
 
     }
 
+    /**
+     * 遍历datacenter
+     * */
+    @Test
+    public void list2() throws MalformedURLException, RemoteException {
+
+
+        ServiceInstance serviceInstance = new ServiceInstance(new URL("https://" + host + "/sdk"), username, password, true);
+
+        ManagedEntity[] mes = serviceInstance.getRootFolder().getChildEntity();
+        for (ManagedEntity i : mes) {
+            log.error("DataCenter: {}", i.getName());
+        }
+
+
+    }
+
+    /**
+     * 遍历compute_resource
+     * */
+    @Test
+    public void list3() throws MalformedURLException, RemoteException {
+
+
+
+        ServiceInstance serviceInstance = new ServiceInstance(new URL("https://" + host + "/sdk"), username, password, true);
+
+        ManagedObjectReference cv = serviceInstance.getViewManager().createContainerView(serviceInstance.getRootFolder(), new String[]{TEXT_CLUSTER_COMPUTE_RESOURCE}, true).getMOR();
+
+
+
+        PropertyFilterSpec pfs = new PropertyFilterSpec();
+
+
+        TraversalSpec ts = new TraversalSpec();
+        ts.setType("ContainerView");
+        ts.setPath("view");
+        ts.setName("traverseEntities");
+        ts.setSkip(false);
+
+        ObjectSpec os = new ObjectSpec();
+        os.setObj(cv);
+        os.setSkip(true);
+        os.setSelectSet(new SelectionSpec[]{ts});
+
+        PropertySpec ps = new PropertySpec();
+        ps.setType(TEXT_CLUSTER_COMPUTE_RESOURCE);
+        ps.setPathSet(new String[]{"name"});
+
+
+        pfs.setObjectSet(new ObjectSpec[]{os});
+        pfs.setPropSet(new PropertySpec[]{ps});
+
+
+
+        PropertyFilterSpec[] pfsList = new PropertyFilterSpec[1];
+        pfsList[0] = pfs;
+
+        RetrieveResult result = serviceInstance.getPropertyCollector().retrievePropertiesEx(pfsList, new RetrieveOptions());
+
+
+        for (ObjectContent i: result.getObjects()) {
+            printInfo(i);
+        }
+
+
+    }
+
+    /**
+     * 根据id获取虚拟机信息，并执行开机操作
+     * */
+    @Test
+    public void getVm() throws MalformedURLException, RemoteException {
+
+        ServiceInstance serviceInstance = getServiceInstance();
+
+        ManagedObjectReference mor = new ManagedObjectReference();
+        mor.setType(TEXT_VIRTUAL_MACHINE);
+        mor.setVal("vm-623");
+        VirtualMachine v = new VirtualMachine(serviceInstance.getServerConnection(), mor);
+
+        VirtualDevice[] virtualDevices = v.getConfig().getHardware().getDevice();
+
+        for (VirtualDevice i : virtualDevices) {
+
+            log.error("device name is {}, type is {}", i.getDeviceInfo().getLabel(), i.getDeviceInfo().getDynamicType());
+        }
+
+
+        log.error("vm is {}, ip is {}", v.getName(), v.getGuest().ipAddress);
+
+
+//        v.powerOnVM_Task(null);
+
+
+    }
+
     private static void printInfo(ObjectContent objectContent) {
         // This is super generic here... To actually relate the objects so you
         // know which HostSystem a VirtualMachine lives on you need to implement
@@ -96,5 +194,9 @@ public class BaseTest {
         for(DynamicProperty props: objectContent.getPropSet()) {
             System.out.println(props.val);
         }
+    }
+
+    private ServiceInstance getServiceInstance() throws MalformedURLException, RemoteException {
+        return  new ServiceInstance(new URL("https://" + host + "/sdk"), username, password, true);
     }
 }
