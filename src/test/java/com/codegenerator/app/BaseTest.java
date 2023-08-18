@@ -1,25 +1,38 @@
 package com.codegenerator.app;
 
 import com.vmware.vim25.DynamicProperty;
+import com.vmware.vim25.ManagedObjectReference;
 import com.vmware.vim25.ObjectContent;
 import com.vmware.vim25.ObjectSpec;
 import com.vmware.vim25.PropertyFilterSpec;
 import com.vmware.vim25.PropertySpec;
 import com.vmware.vim25.RetrieveOptions;
 import com.vmware.vim25.RetrieveResult;
+import com.vmware.vim25.SelectionSpec;
+import com.vmware.vim25.ServiceContent;
+import com.vmware.vim25.TraversalSpec;
+import com.vmware.vim25.VirtualMachineConfigInfo;
+import com.vmware.vim25.VirtualMachineConfigSpec;
+import com.vmware.vim25.mo.ContainerView;
 import com.vmware.vim25.mo.InventoryNavigator;
 import com.vmware.vim25.mo.ManagedEntity;
 import com.vmware.vim25.mo.ServiceInstance;
+import com.vmware.vim25.mo.VirtualMachine;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 public class BaseTest {
 
+    /**
+     * 遍历了datacenter中所有虚机和模板
+     * */
     @Test
     public void update() throws MalformedURLException, RemoteException {
 
@@ -29,68 +42,50 @@ public class BaseTest {
 
         ServiceInstance serviceInstance = new ServiceInstance(new URL("https://" + host + "/sdk"), username, password, true);
 
-        ManagedEntity clusterMe = new InventoryNavigator(serviceInstance.getRootFolder()).searchManagedEntity("ClusterComputeResource", "246集群-1");
-        RetrieveOptions options = new RetrieveOptions();
-        options.setMaxObjects(100);
-        String[] vmProps = new String[2];
-        vmProps[0] = "name";
-        vmProps[1] = "runtime.host";
+
+        String[] vmList = new String[1];
+        vmList[0] ="VirtualMachine";
+
+
+
+        ManagedObjectReference cViewRef = serviceInstance
+                .getViewManager()
+                .createContainerView(serviceInstance.getRootFolder(), vmList, true)
+                .getMOR();
+
+
+        ObjectSpec objectSpec = new ObjectSpec();
+        objectSpec.setObj(cViewRef);
+        objectSpec.setSkip(true);
+
+        TraversalSpec traversalSpec = new TraversalSpec();
+        traversalSpec.setName("traverseEntities");
+        traversalSpec.setPath("view");
+        traversalSpec.setSkip(false);
+        traversalSpec.setType("ContainerView");
+
+        objectSpec.setSelectSet(new SelectionSpec[]{traversalSpec});
+
+        PropertyFilterSpec[] propertyFilterSpecs = new PropertyFilterSpec[1];
+
+        PropertyFilterSpec fSpec = new PropertyFilterSpec();
+        fSpec.setObjectSet(new ObjectSpec[]{objectSpec});
+
         PropertySpec vmSpec = new PropertySpec();
-        vmSpec.setAll(false);
         vmSpec.setType("VirtualMachine");
-        vmSpec.setPathSet(vmProps);
+        vmSpec.setPathSet(new String[]{"name"});
+        fSpec.setPropSet(new PropertySpec[]{vmSpec});
 
-        String[] hostProps = new String[4];
-        hostProps[0] = "name";
-        hostProps[1] = "summary.hardware.numCpuCores";
-        hostProps[2] = "summary.hardware.cpuModel";
-        hostProps[3] = "summary.hardware.memorySize";
-        PropertySpec hostSpec = new PropertySpec();
-        hostSpec.setAll(false);
-        hostSpec.setType("HostSystem");
-        hostSpec.setPathSet(hostProps);
+        propertyFilterSpecs[0] = fSpec;
 
-        String[] clusterProps = new String[2];
-        clusterProps[0] = "name";
-        clusterProps[1] = "parent";
-        PropertySpec clusterSpec = new PropertySpec();
-        clusterSpec.setAll(false);
-        clusterSpec.setType("ClusterComputeResource");
-        clusterSpec.setPathSet(clusterProps);
+        RetrieveOptions retrieveOptions = new RetrieveOptions();
+        retrieveOptions.setMaxObjects(1000);
+        RetrieveResult props = serviceInstance.getPropertyCollector().retrievePropertiesEx(propertyFilterSpecs, retrieveOptions);
 
-        ObjectSpec oSpec = new ObjectSpec();
-        oSpec.setObj(clusterMe.getMOR());
-        oSpec.setSelectSet(com.vmware.vim25.mo.util.PropertyCollectorUtil.buildFullTraversalV4());
-        PropertyFilterSpec[] pfSpec = new PropertyFilterSpec[1];
-        pfSpec[0] = new PropertyFilterSpec();
+        for (ObjectContent oc : props.getObjects()) {
+            printInfo(oc);
+        }
 
-        ObjectSpec[] oo = new ObjectSpec[1];
-        oo[0] = oSpec;
-
-        pfSpec[0].setObjectSet(oo);
-        PropertySpec[] pp = new PropertySpec[3];
-        pp[0] = vmSpec;
-        pp[1] = hostSpec;
-        pp[2] = clusterSpec;
-
-        pfSpec[0].setPropSet(pp);
-        RetrieveResult ret = serviceInstance.getPropertyCollector().retrievePropertiesEx(pfSpec, options);
-
-        for (ObjectContent aRet : ret.getObjects()) {
-            if(aRet.getObj().type.equalsIgnoreCase("ClusterComputeResource")) {
-                printInfo(aRet);
-            }
-            if(aRet.getObj().type.equalsIgnoreCase("HostSystem")) {
-                System.out.println("Host Info: ");
-                printInfo(aRet);
-                System.out.println("#######################");
-            }
-            if(aRet.getObj().type.equalsIgnoreCase("VirtualMachine")) {
-                System.out.println("VirtualMachine: ");
-                printInfo(aRet);
-                System.out.println("#######################################");
-            }
-    }
     }
 
     private static void printInfo(ObjectContent objectContent) {
