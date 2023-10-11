@@ -1,5 +1,7 @@
 package com.codegenerator.test;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.codegenerator.app.controller.Remote;
 import com.codegenerator.app.controller.Types;
 import lombok.extern.slf4j.Slf4j;
@@ -10,12 +12,14 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 import org.xerial.snappy.Snappy;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.net.URI;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.regex.Pattern;
 
 @Slf4j
@@ -24,6 +28,10 @@ public class AppTest {
     private static final Pattern pattern = Pattern.compile("\\{\\s*(\\w*)\\s*\\{(.*?)}}");
 
 
+    @Test
+    public void test1() {
+
+    }
 
     @Test
     public void test2() throws IOException {
@@ -104,10 +112,75 @@ public class AppTest {
         log.info("s {}", exchange);
     }
 
+    @Test
+    public void test3() throws IOException {
+
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        int timeout = 3000; // 5 seconds
+        HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
+        factory.setConnectTimeout(timeout);
+        factory.setReadTimeout(timeout);
+        restTemplate.setRequestFactory(factory);
+
+        //参考的 go http send 版本
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Encoding", "snappy");
+//        headers.add("User-Agent", ;"opcai")
+        headers.add("X-Prometheus-Remote-Write-Version", "0.1.0");
+        headers.add("Content-Type", "application/x-protobuf");
+
+        HttpEntity requestEntity = new HttpEntity(headers);
+
+
+        String baseUrl = "http://127.0.0.1:9090/api/v1/query_range";
+        // 使用UriComponentsBuilder构建带有查询参数的URL
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(baseUrl)
+                .queryParam("query", "{query}")
+                .queryParam("start", 1693894544)
+                .queryParam("end", 1693898144)
+                .queryParam("step", 360)
+                ;
+
+        URI uri = builder.encode().build().expand("{__name__=~\"cpu_util|mem_util|disk_util\"}").toUri();
+        ResponseEntity<Object> exchange = restTemplate.exchange(
+                uri,
+                HttpMethod.GET,
+                null,
+                Object.class
+        );
+
+    log.info("sadf");
+
+    }
+
+
+    @Test
+    public void test4() throws ParseException {
+
+
+
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        Date d1 = sdf.parse("2023-09-12 13:39:41");
+
+        long a = d1.getTime();
+
+        long step = 60000*5;
+
+        long b = (a/step)*step;
+
+        String dateString = sdf.format(new Date(b));
+
+        System.out.println(sdf.format(new Date(a)));
+        System.out.println(dateString);
+    }
 
     /**
      *
-     * 获取某个云主机的某个指标的time series
+     * 获        String urlWithParams = builder.toUriString();取某个云主机的某个指标的time series
      * */
     private Types.TimeSeries buildMoTimeSeries(String moId, String metricName, int period) {
         // 构造某个个指标的time series
