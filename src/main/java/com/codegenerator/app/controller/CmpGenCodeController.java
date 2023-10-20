@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 
@@ -191,6 +192,40 @@ public class CmpGenCodeController {
         writeToFile(renderedText, fileName);
 
         return renderedText;
+    }
+
+    @GetMapping("/c")
+    public String c(@RequestParam List<String> arr) throws IOException, TemplateException {
+        final String dir = "target/temp/";
+        deleteDirectory(new File(dir));
+
+        for (String i : arr) {
+            String fileName = dir+i;
+
+            // 获取FreeMarker配置
+            Configuration configuration = freeMarkerConfigurer.getConfiguration();
+            Template template = configuration.getTemplate("temp.ftl");
+
+            Map<String, Object> entityMap = new HashMap<>();
+            entityMap.put("fileName", i.replace(".java", ""));
+            // 渲染模板并获取文本内容
+            String renderedText = FreeMarkerTemplateUtils.processTemplateIntoString(template, entityMap);
+
+            writeToFile(renderedText, fileName);
+        }
+
+
+
+        return "ok";
+    }
+
+    @GetMapping("/d")
+    public String d(@RequestParam Long num)  {
+
+
+
+
+        return "ok";
     }
 
     private void writeToFile(String text, String fileName) throws IOException {
