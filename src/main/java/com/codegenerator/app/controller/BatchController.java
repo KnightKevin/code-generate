@@ -2,10 +2,9 @@ package com.codegenerator.app.controller;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.JobInstance;
 import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.JobParametersInvalidException;
-import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.JobRegistry;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
@@ -13,16 +12,14 @@ import org.springframework.batch.core.configuration.support.JobRegistryBeanPostP
 import org.springframework.batch.core.explore.JobExplorer;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.JobOperator;
-import org.springframework.batch.core.launch.support.SimpleJobLauncher;
 import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
-import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.repository.JobRestartException;
-import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
-import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -46,69 +43,17 @@ public class BatchController {
     @Autowired
     private JobExplorer jobExplorer;
 
-    @Autowired
-    private JobRegistry jobRegistry;
-
-    @Bean
-    public Step stepA() {
-        return stepBuilderFactory.get("stepA").tasklet((contribution, chunkContext)->{
-            System.out.println("Processing A");
-
-
-            try {
-                Thread.sleep(10000);
-                System.out.println("processing A end");
-            } catch (Exception e) {
-
-            }
-
-            return RepeatStatus.FINISHED;
-        })
-
-                .build();
-    }
-
-    @Bean
-    public Step stepB() {
-        return stepBuilderFactory.get("stepB").tasklet((contribution, chunkContext)->{
-            System.out.println("Processing B");
-
-            try {
-                Thread.sleep(10000);
-                System.out.println("processing B end");
-            } catch (Exception e) {
-
-            }
-
-
-            return RepeatStatus.FINISHED;
-        })
-                .build();
-    }
-
-    @Bean
-    public Step stepC() {
-        return stepBuilderFactory.get("stepC").tasklet((contribution, chunkContext)->{
-            System.out.println("Processing C");
-            return RepeatStatus.FINISHED;
-        })
-                .build();
-    }
-
-    @Bean
-    public Job myJob() {
-        return jobBuilderFactory.get("myJob")
-                .start(stepA())
-                .next(stepB())
-                .next(stepC())
-                .build();
-    }
+    @Resource(name = "myJob")
+    private Job myJob;
 
     @GetMapping("/batch")
-    public String batch() throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
+    public String batch(@RequestParam String id) throws JobParametersInvalidException, JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException {
 
+        JobParameters jobParameters = new JobParametersBuilder()
+                .addString("cloudId", id)
+                .toJobParameters();
 
-       JobExecution execution =jobLauncher.run(myJob(), new JobParameters());
+       JobExecution execution =jobLauncher.run(myJob, jobParameters);
 
         return execution.getId()+"";
     }
@@ -144,12 +89,7 @@ public class BatchController {
         return "";
     }
 
-    @Bean
-    public JobRegistryBeanPostProcessor jobRegistryBeanPostProcessor() {
-        JobRegistryBeanPostProcessor postProcessor = new JobRegistryBeanPostProcessor();
-        postProcessor.setJobRegistry(jobRegistry);
-        return postProcessor;
-    }
+
 
 
 }
