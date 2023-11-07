@@ -9,7 +9,11 @@ import java.io.Serializable;
 @JobScope
 @Component
 @Data
-public class JobParams implements Serializable {
+public class TaskContext implements Serializable {
     private String a;
     private String b;
+
+    public void putData(String k, Object v) {
+
+    }
 }

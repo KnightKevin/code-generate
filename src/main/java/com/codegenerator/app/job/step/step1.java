@@ -1,7 +1,10 @@
 package com.codegenerator.app.job.step;
 
-import com.codegenerator.app.model.JobParams;
-import org.springframework.batch.core.JobParameters;
+import com.codegenerator.app.core.Step;
+import com.codegenerator.app.mapper.TaskParamsMapper;
+import com.codegenerator.app.model.TaskContext;
+import com.codegenerator.app.model.TaskParams;
+import com.codegenerator.app.model.level2.Task2Context;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
@@ -10,17 +13,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class step1 implements Tasklet {
+public class step1 extends Step {
 
     @Autowired
-    private JobParams jobParams;
+    private TaskContext taskContext;
+
+    @Autowired
+    private TaskParamsMapper taskParamsMapper;
 
     @Override
-    public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
+    public RepeatStatus handle(Task2Context context) {
         System.out.println("Processing A");
 
-        jobParams.setA("asdfasdf");
-        jobParams.setB("dddddddddddddd");
+        context.putData("a", "v1");
+        context.putData("b", "v1");
+        context.putData("c", "v1");
 
 
         try {
@@ -30,6 +37,9 @@ public class step1 implements Tasklet {
 
         }
 
+
         return RepeatStatus.FINISHED;
+
     }
+
 }
