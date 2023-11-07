@@ -1,7 +1,9 @@
 package com.codegenerator.app.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.codegenerator.app.enums.RespCode;
 import com.codegenerator.app.model.DbField;
+import com.codegenerator.app.module.MenuTree;
 import com.codegenerator.app.util.DbTypeConvert;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -11,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
@@ -219,13 +223,26 @@ public class CmpGenCodeController {
         return "ok";
     }
 
-    @GetMapping("/d")
-    public String d(@RequestParam Long num)  {
+    @PostMapping("/d")
+    public String d(@RequestBody MenuTree body) throws IOException, TemplateException {
 
+        final String dir = "target/dao/";
+        deleteDirectory(new File(dir));
 
+        String fileName = dir + "/Menu.txt";
 
+        // 获取FreeMarker配置
+        Configuration configuration = freeMarkerConfigurer.getConfiguration();
+        Template template = configuration.getTemplate("MenuBuilder.ftl");
 
-        return "ok";
+        Map<String, Object> entityMap = new HashMap<>();
+        entityMap.put("list", body.getChildren());
+        // 渲染模板并获取文本内容
+        String renderedText = FreeMarkerTemplateUtils.processTemplateIntoString(template, entityMap);
+
+        writeToFile(renderedText, fileName);
+
+        return renderedText;
     }
 
     private void writeToFile(String text, String fileName) throws IOException {
