@@ -8,9 +8,9 @@ import com.codegenerator.app.module.MenuTree;
 import com.codegenerator.app.module.MenuTreeVo;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,6 +23,9 @@ import java.util.List;
 
 @RestController
 public class MenuController {
+
+    private static String[] leftKeys;
+
 
     @PostMapping("/writeJsonToFile")
     public MenuTree writeJsonToFile(@RequestBody MenuTree menus) {
@@ -81,6 +84,60 @@ public class MenuController {
         return JSON.parseObject(json, MenuTreeVo.class);
     }
 
+    @PostMapping("/check")
+    public List<String> checkVaild(@RequestBody MenuTreeVo body) {
+
+        errorIds.clear();
+
+        // 将id解析成key
+        check(body, "");
+
+        return errorIds;
+    }
+
+
+    private List<String> errorIds = new ArrayList<>();
+
+    public void check(MenuTreeVo body, String parentId) {
+        for (MenuTreeVo m : body.getChildren()) {
+            if (!m.getId().startsWith(parentId)) {
+                errorIds.add(m.getId());
+            }
+
+            check(m, m.getId());
+        }
+    }
+
+
+    @PostMapping("/parseIdToKey")
+    public MenuTreeVo parseIdToKey(@RequestBody MenuTreeVo body) {
+
+        // 将id解析成key
+        process(body, "");
+
+        return body;
+    }
+
+    public void process(MenuTreeVo body, String parentId) {
+        // 将id解析成key
+        for (MenuTreeVo m : body.getChildren()) {
+
+            String key;
+            if (StringUtils.isEmpty(parentId)) {
+                key = m.getId();
+            } else {
+                String[] keys = m.getId().replace(parentId+".", "").split("\\.");
+                key = keys[0];
+            }
+
+//            leftKeys =  keys.length >= 1 ? Arrays.copyOfRange(keys, 1, keys.length-1) : ArrayUtils.EMPTY_STRING_ARRAY;
+            m.setKey(key);
+            process(m, m.getId());
+
+
+        }
+    }
+
     @PostMapping("/formatJson")
     public MenuTreeVo formatJson(@RequestBody MenuTree menus ) throws IOException {
 
@@ -95,11 +152,11 @@ public class MenuController {
         List<MenuTree> children = new ArrayList<>();
         for (MenuTree i : tree.getChildren()) {
             MenuTree menu = i;
-            if (StringUtils.hasText(i.getRefJson())) {
+            if (StringUtils.isNotEmpty(i.getRefJson())) {
                 menu = convert(i.getRefJson());
             }
 
-            if (StringUtils.hasText(i.getRefButton())) {
+            if (StringUtils.isNotEmpty(i.getRefButton())) {
                 menu = convert(i.getRefButton());
                 menu.setId(tree.getId()+"."+menu.getId());
             }
