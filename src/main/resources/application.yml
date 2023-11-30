@@ -1,0 +1,24 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://host222:3306/app
+    username: root
+    password: password
+
+  batch:
+    job:
+      enabled: false
+    jdbc:
+      initialize-schema: always
+      isolation-level-for-create: default
+
+  flyway:
+    enabled: true
+    encoding: UTF-8
+    # ??????location, ?','??
+    locations: classpath:db/migration
+    # migrate????
+    validate-on-migrate: true

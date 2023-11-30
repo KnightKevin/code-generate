@@ -41,6 +41,11 @@ public class step2 extends Step {
 
         }
 
+        if (true) {
+            // throw new RuntimeException("出错了");
+
+        }
+
 
         return RepeatStatus.FINISHED;
 

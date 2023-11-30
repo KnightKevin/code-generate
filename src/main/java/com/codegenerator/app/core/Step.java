@@ -11,6 +11,7 @@ import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,10 +37,19 @@ public abstract class Step implements Tasklet {
 
         // 获取上下文
         String contextStr = (String) chunkContext.getStepContext().getJobParameters().get("params");
-        Task2Context taskContext = JSON.parseObject(contextStr, Task2Context.class);
+        Task2Context taskContext;
+
+        if (contextStr == null) {
+            taskContext = new Task2Context();
+        } else {
+            taskContext = JSON.parseObject(contextStr, Task2Context.class);
+        }
         taskContext.setData(map);
 
         RepeatStatus status = handle(taskContext);
+
+
+        contribution.getStepExecution().getJobExecution().addFailureException(new RuntimeException("dasdfasdfasdfadsf"));
 
         // 将可能产生的新数据放入数据库中
 
