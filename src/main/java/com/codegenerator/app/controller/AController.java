@@ -48,6 +48,15 @@ public class AController {
             List<RouteInfo> routes = new ArrayList<>();
             for (String key : json.keySet()) {
                 RouteInfo info = json.getObject(key, RouteInfo.class);
+                info.setModule(module);
+                if (
+                        info.uri.startsWith("/swagger") ||
+                        info.uri.startsWith("/web/index") ||
+                        info.uri.startsWith("/error")
+                ) {
+                    continue;
+                }
+
                 routes.add(info);
             }
 
@@ -80,6 +89,7 @@ public class AController {
     @Data
     private static class RouteInfo {
         private String uri;
+        private String module;
         private String actionKey = "";
         private String method = "";
     }
