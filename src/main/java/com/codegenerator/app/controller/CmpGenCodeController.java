@@ -59,7 +59,12 @@ public class CmpGenCodeController {
         // zstack_cmp
         if (
                 "vdc_role_relation".equals(tableName) ||
-                "vdc_user_relation".equals(tableName)
+                "vdc_user_relation".equals(tableName) ||
+//                "role_permission".equals(tableName) ||
+                        "role_permission_mas".equals(tableName) ||
+                        "role_mas".equals(tableName)
+
+
         ) {
             return "ok";
         }

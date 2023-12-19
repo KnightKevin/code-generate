@@ -1,11 +1,17 @@
 package com.codegenerator.app;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.codegenerator.app.entity.a.Role;
+import com.codegenerator.app.entity.a.User;
 import com.codegenerator.app.entity.a.UserRole;
+import com.codegenerator.app.entity.a.Vdc;
 import com.codegenerator.app.entity.b.UserNew;
 import com.codegenerator.app.mapper.a.RoleMapper;
+import com.codegenerator.app.mapper.a.UserMapper;
 import com.codegenerator.app.mapper.a.UserRoleMapper;
+import com.codegenerator.app.mapper.a.VdcMapper;
 import com.codegenerator.app.mapper.b.UserNewMapper;
+import com.codegenerator.app.service.MigrateService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,16 +24,31 @@ import java.util.List;
 public class BaseTest {
 
     @Autowired
-    UserRoleMapper userRoleMapper;
+    MigrateService migrateService;
+
+    @Autowired
+    UserMapper userMapper;
 
     @Autowired
     RoleMapper roleMapper;
 
+    @Autowired
+    VdcMapper vdcMapper;
+
     @Test
     public void update() {
-        QueryWrapper<UserRole> queryWrapper = new QueryWrapper<>();
+        List<User> oldList = userMapper.selectList(null);
+        migrateService.migrateUsers(oldList);
 
-        List<UserRole> list = userRoleMapper.listPlatform();
+        List<Role> oldRoleList = roleMapper.selectList(null);
+        migrateService.migrateRoles(oldRoleList);
+
+
+
+        List<Vdc> oldVdcList = vdcMapper.selectList(null);
+        migrateService.migrateVdcList(oldVdcList);
+
+        migrateService.migrateRolePermission();
 
         Assertions.assertEquals(true, true);
     }
