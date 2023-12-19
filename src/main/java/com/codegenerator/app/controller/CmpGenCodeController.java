@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +38,10 @@ public class CmpGenCodeController {
     @Autowired
     private FreeMarkerConfigurer freeMarkerConfigurer;
 
+    final String zstack_cmp_old = "zstack_cmp_old";
+
+    final String zstack_cmp = "zstack_cmp";
+
 
     /**
      * 生成db相关的文件
@@ -44,13 +49,27 @@ public class CmpGenCodeController {
      * */
     @GetMapping("/db")
     public String db(
-            String db,
-            String tableName,
-            String controllerPackage,
-            String facadePackage,
-            String entityPackage,
-            String module
+            String tableName
     ) throws IOException, TemplateException {
+
+        // 先zstack_cmp_old
+        a(zstack_cmp_old, tableName);
+
+
+        // zstack_cmp
+        if (
+                "vdc_role_relation".equals(tableName) ||
+                "vdc_user_relation".equals(tableName)
+        ) {
+            return "ok";
+        }
+
+        a(zstack_cmp, tableName);
+
+        return "ok";
+    }
+
+    void a(String db, String tableName) throws TemplateException, IOException {
 
         String query = String.format("SELECT COLUMN_NAME, DATA_TYPE, COLUMN_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE table_schema = '%s' and TABLE_NAME = '%s'", db, tableName);
         List<DbField> list = new ArrayList<>(jdbcTemplate.query(query, (rs, rowNum) -> {
@@ -61,17 +80,11 @@ public class CmpGenCodeController {
             field.setDataType(rs.getString("DATA_TYPE"));
             field.setVarName(convertToCamelCase(field.getName()));
 
-
-            String columnName = rs.getString("COLUMN_NAME");
-            String dataType = rs.getString("DATA_TYPE");
-            String columnType = rs.getString("COLUMN_TYPE");
             return field;
         }));
 
 
-
-
-
+        list.sort(Comparator.comparing(DbField::getName));
 
         // cmd bean中会排除数据库中那些不须要处理的字段
         String[] cmdExcludeFields = {"createDate", "updateDate"};
@@ -82,91 +95,53 @@ public class CmpGenCodeController {
 
         // 加载模板
         Template entityTemplate = configuration.getTemplate("dao/Entity.ftl");
-        Template qTemplate = configuration.getTemplate("dao/q.ftl");
-        Template serviceTemplate = configuration.getTemplate("dao/service.ftl");
-        Template serviceImplTemplate = configuration.getTemplate("dao/serviceImpl.ftl");
-        Template replyTemplate = configuration.getTemplate("dao/reply.ftl");
-        Template apiTemplate = configuration.getTemplate("dao/api.ftl");
-        Template apiImplTemplate = configuration.getTemplate("dao/apiImpl.ftl");
-        Template controllerTemplate = configuration.getTemplate("dao/controller.ftl");
-        Template cmdTemplate = configuration.getTemplate("dao/cmd.ftl");
-        Template qryTemplate = configuration.getTemplate("dao/qry.ftl");
-        Template cmdPostBodyTemplate = configuration.getTemplate("dao/cmdPostBody.ftl");
+        Template mapperTemplate = configuration.getTemplate("dao/mapper.ftl");
+
+
+        final String mapperDir = "D:\\work_space\\codegenerator\\src\\main\\java\\com\\codegenerator\\app\\mapper\\";
+        final String entityDir = "D:\\work_space\\codegenerator\\src\\main\\java\\com\\codegenerator\\app\\entity\\";
 
 
 
 
+//        deleteDirectory(new File(dir));
 
+        boolean isOld = zstack_cmp_old.equals(db);
 
-
-
-
-
-        final String dir = "target/dao/";
-
-
-
-        deleteDirectory(new File(dir));
-
-        String className = uppercaseFirstChar(convertToCamelCase(tableName));
+        String className = uppercaseFirstChar(convertToCamelCase(tableName)) + (isOld?"":"New");
         Map<String, Object> entityMap = new HashMap<>();
+        entityMap.put("db", db);
+        entityMap.put("tableName", tableName);
         entityMap.put("tableClassVarName", convertToCamelCase(tableName));
-        entityMap.put("className", uppercaseFirstChar(className));
-        entityMap.put("entityPackage", entityPackage);
-        entityMap.put("module", module);
+        entityMap.put("className", className);
 
         entityMap.put("list", list);
         entityMap.put("cmdExcludeFields", cmdExcludeFields);
+
+        entityMap.put("entityPackage", isOld?"com.codegenerator.app.entity.a":"com.codegenerator.app.entity.b");
+
         // 渲染模板并获取文本内容
         String renderedText = FreeMarkerTemplateUtils.processTemplateIntoString(entityTemplate, entityMap);
-
-        String fileName = dir + String.format("entity/%s.java", className);
-        writeToFile(renderedText, fileName);
-
-        // reply对象
-        renderedText = FreeMarkerTemplateUtils.processTemplateIntoString(replyTemplate, entityMap);
-        fileName = dir + String.format("reply/%sReply.java", className);
-        writeToFile(renderedText, fileName);
-
-        // 渲染Q对象
-        renderedText = FreeMarkerTemplateUtils.processTemplateIntoString(qTemplate, entityMap);
-        fileName = dir + String.format("querydsl/Q%s.java", className);
-        writeToFile(renderedText, fileName);
-
-        // IxxService.java对象
-        renderedText = FreeMarkerTemplateUtils.processTemplateIntoString(serviceTemplate, entityMap);
-        fileName = dir + String.format("service/I%sService.java", className);
-        writeToFile(renderedText, fileName);
-
-        renderedText = FreeMarkerTemplateUtils.processTemplateIntoString(serviceImplTemplate, entityMap);
-        fileName = dir + String.format("service/%sServiceImpl.java", className);
-        writeToFile(renderedText, fileName);
-
-        renderedText = FreeMarkerTemplateUtils.processTemplateIntoString(apiTemplate, entityMap);
-        fileName = dir + String.format("facade/I%sApi.java", className);
-        writeToFile(renderedText, fileName);
-
-        renderedText = FreeMarkerTemplateUtils.processTemplateIntoString(apiImplTemplate, entityMap);
-        fileName = dir + String.format("facade/%sApiImpl.java", className);
-        writeToFile(renderedText, fileName);
-
-        renderedText = FreeMarkerTemplateUtils.processTemplateIntoString(controllerTemplate, entityMap);
-        fileName = dir + String.format("controller/%sController.java", className);
-        writeToFile(renderedText, fileName);
-
-        renderedText = FreeMarkerTemplateUtils.processTemplateIntoString(cmdTemplate, entityMap);
-        fileName = dir + String.format("request/%sCmd.java", className);
+        String fileName = "";
+        String classFileName = String.format("%s.java", className);
+        if (zstack_cmp_old.equals(db)) {
+            fileName = entityDir + "a\\" + classFileName;
+        } else {
+            fileName = entityDir + "b\\" + classFileName;
+        }
         writeToFile(renderedText, fileName);
 
 
-        fileName = dir + String.format("request/%sQry.java", className);
-        render(fileName, qryTemplate, entityMap);
-
-
-        renderedText = FreeMarkerTemplateUtils.processTemplateIntoString(cmdPostBodyTemplate, entityMap);
-        fileName = dir + String.format("%s.json", className);
+        // 渲染模板并获取文本内容
+        renderedText = FreeMarkerTemplateUtils.processTemplateIntoString(mapperTemplate, entityMap);
+        fileName = "";
+        classFileName = String.format("%sMapper.java", className);
+        if (zstack_cmp_old.equals(db)) {
+            fileName = mapperDir + "a\\" + classFileName;
+        } else {
+            fileName = mapperDir + "b\\" + classFileName;
+        }
         writeToFile(renderedText, fileName);
-        return renderedText;
     }
 
     private void render(String fileName, Template template, Map<String, Object> entityMap) throws IOException, TemplateException {

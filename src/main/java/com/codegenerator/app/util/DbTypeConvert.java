@@ -24,6 +24,7 @@ public class DbTypeConvert implements TemplateMethodModelEx {
         switch (dbType) {
             case "text":
             case "varchar":
+            case "mediumtext":
                 type = "String";
                 break;
             case "int":
@@ -40,6 +41,9 @@ public class DbTypeConvert implements TemplateMethodModelEx {
                 break;
             case "datetime":
                 type = "Date";
+                break;
+            case "bit":
+                type = "Boolean";
                 break;
             default:
                 type = String.format("/* the dbType{%s} has not been parsed yet! */", dbType);

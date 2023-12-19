@@ -1,0 +1,18 @@
+server:
+  port: 8080
+spring:
+  datasource:
+    dynamic:
+      primary: zstack_cmp_old
+      strict: true
+      datasource:
+        zstack_cmp_old:
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://host222:3306/zstack_cmp_old
+          username: root
+          password: password
+        zstack_cmp:
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://host222:3306/zstack_cmp
+          username: root
+          password: password
