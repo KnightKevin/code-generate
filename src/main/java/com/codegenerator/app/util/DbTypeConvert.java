@@ -24,6 +24,7 @@ public class DbTypeConvert implements TemplateMethodModelEx {
         switch (dbType) {
             case "text":
             case "varchar":
+            case "mediumtext":
                 type = "String";
                 break;
             case "int":

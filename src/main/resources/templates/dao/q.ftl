@@ -27,7 +27,7 @@ public class Q${className} extends EntityPathBase<${className}> {
 
 <#list list as i>
 
- <#if i.dataType == 'varchar'>
+ <#if i.dataType == 'varchar' || i.dataType == 'mediumtext'>
     public final StringPath ${i.varName} = createString("${i.varName}");
  <#elseif i.dataType == 'int'>
     public final NumberPath<Integer> ${i.varName} = createNumber("${i.varName}", Integer.class);
