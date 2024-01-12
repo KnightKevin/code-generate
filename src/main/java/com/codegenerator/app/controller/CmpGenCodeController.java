@@ -2,6 +2,7 @@ package com.codegenerator.app.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.codegenerator.app.enums.RespCode;
+import com.codegenerator.app.enums.StepKey;
 import com.codegenerator.app.model.DbField;
 import com.codegenerator.app.module.MenuTree;
 import com.codegenerator.app.util.DbTypeConvert;
@@ -189,7 +190,7 @@ public class CmpGenCodeController {
         Template template = configuration.getTemplate("i18n.ftl");
 
         Map<String, Object> entityMap = new HashMap<>();
-        entityMap.put("list", RespCode.values());
+        entityMap.put("list", StepKey.values());
         // 渲染模板并获取文本内容
         String renderedText = FreeMarkerTemplateUtils.processTemplateIntoString(template, entityMap);
 

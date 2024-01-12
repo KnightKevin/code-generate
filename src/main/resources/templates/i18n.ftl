@@ -1,3 +1,3 @@
 <#list list as i>
-exception.${i.code} = ${i.msg}
+subtask.step.${i.name()} = ${i.msg}
 </#list>
