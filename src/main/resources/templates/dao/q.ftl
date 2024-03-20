@@ -29,14 +29,14 @@ public class Q${className} extends EntityPathBase<${className}> {
 
  <#if i.dataType == 'varchar' || i.dataType == 'mediumtext' || i.dataType == 'text'>
     public final StringPath ${i.varName} = createString("${i.varName}");
- <#elseif i.dataType == 'int'>
+ <#elseif i.dataType == 'int' || i.dataType == 'tinyint'>
     public final NumberPath<Integer> ${i.varName} = createNumber("${i.varName}", Integer.class);
  <#elseif i.dataType == 'bigint'>
     public final NumberPath<Long> ${i.varName} = createNumber("${i.varName}", Long.class);
  <#elseif i.dataType == 'double'>
     public final NumberPath<Double> ${i.varName} = createNumber("${i.varName}", Double.class);
  <#elseif i.dataType == 'decimal'>
-    public final NumberPath<BigDecimal> ${i.varName} = createNumber(${i.varName}, BigDecimal.class);
+    public final NumberPath<BigDecimal> ${i.varName} = createNumber("${i.varName}", BigDecimal.class);
  <#elseif i.dataType == 'datetime'>
     public final DateTimePath<java.util.Date> ${i.varName} = createDateTime("${i.varName}", java.util.Date.class);
  <#else>

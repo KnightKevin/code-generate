@@ -28,6 +28,7 @@ public class DbTypeConvert implements TemplateMethodModelEx {
                 type = "String";
                 break;
             case "int":
+            case "tinyint":
                 type = "Integer";
                 break;
             case "bigint":
